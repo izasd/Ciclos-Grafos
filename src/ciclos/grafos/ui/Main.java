@@ -35,11 +35,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-/**
- * Main com estilo "forense": painel lateral, tooltips, cores por valor,
- * formatação monetária, hover, clique para detalhes e efeito de destaque para
- * ciclo.
- */
 public class Main extends Application {
 
     public static Grafo G;
@@ -55,7 +50,7 @@ public class Main extends Application {
     // nomes automáticos "Conta A", "Conta B", ...
     private Map<Integer, String> contaNomes = new HashMap<>();
 
-    // painel lateral (forense)
+    // painel lateral
     private VBox painelLateral;
     private Label lblTitulo;
     private Label lblConta;
@@ -80,10 +75,9 @@ public class Main extends Application {
         // gera nomes automáticos de acordo com o número de vértices
         gerarNomesAutomaticos(G.V());
 
-        // painel lateral (estilo forense)
+        // painel lateral
         criarPainelLateral();
 
-        // botão estilizado e posicionado
         botaoExecutar.setLayoutX(20);
         botaoExecutar.setLayoutY(20);
         botaoExecutar.setStyle("-fx-background-color: #2b6fa3; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 4;");
@@ -92,11 +86,10 @@ public class Main extends Application {
             destacarCiclo();
         });
 
-        // fundo neutro e retângulo do painel lateral
         Rectangle fundo = new Rectangle(0, 0, 900, 600);
-        fundo.setFill(Color.web("#0f1720")); // muito escuro para o estilo forense
+        fundo.setFill(Color.web("#0f1720"));
         Rectangle painelBg = new Rectangle(680, 0, 220, 600);
-        painelBg.setFill(Color.web("#0b1220")); // tom ligeiramente diferente
+        painelBg.setFill(Color.web("#0b1220"));
         painelBg.setStroke(Color.web("#1f2a36"));
         painelBg.setStrokeWidth(1);
 
@@ -148,7 +141,7 @@ public class Main extends Application {
         verticesCirculos = new Circle[V];
         verticesLabels = new Text[V];
 
-        double centerX = 300; // reduzido para abrir espaço do painel
+        double centerX = 300;
         double centerY = 300;
         double raio = 200;
 
@@ -159,16 +152,15 @@ public class Main extends Application {
             double x = centerX + Math.cos(ang) * raio;
             double y = centerY + Math.sin(ang) * raio;
 
-            Circle c = new Circle(x, y, 22, Color.web("#0b1620")); // fundo escuro no nó
+            Circle c = new Circle(x, y, 22, Color.web("#0b1620"));
             c.setStroke(Color.web("#2a9fd6"));
             c.setStrokeWidth(2);
 
-            // nome no lugar do número (estilo mono, técnico)
+            // nome no lugar do número
             Text t = new Text(x - 20, y + 6, contaNomes.get(v));
             t.setFill(Color.web("#cfe8ff"));
             t.setFont(Font.font("Consolas", 12));
 
-            // hover effect
             final int idx = v;
             c.setOnMouseEntered(evt -> {
                 c.setFill(Color.web("#083b58"));
@@ -219,7 +211,7 @@ public class Main extends Application {
                 linha.endXProperty().bind(cDest.centerXProperty());
                 linha.endYProperty().bind(cDest.centerYProperty());
 
-                // cor e espessura por faixa de valor (visual forense)
+                // cor e espessura por faixa de valor
                 double valor = a.peso();
                 if (valor < 300) {
                     linha.setStroke(Color.web("#5f8c6a")); // verde discreto
@@ -232,7 +224,6 @@ public class Main extends Application {
                     linha.setStrokeWidth(2.8);
                 }
 
-                // efeito sutil
                 linha.setOpacity(0.95);
 
                 // tooltip para a aresta com valor formatado
@@ -240,19 +231,16 @@ public class Main extends Application {
 
                 groupArestas.getChildren().add(linha);
 
-                // texto do peso (posicionado no meio) com deslocamento perpendicular
                 Text pesoText = new Text();
                 pesoText.setText(nf.format(a.peso()));
                 pesoText.setFill(Color.web("#8ec5ff"));
                 pesoText.setFont(Font.font("Consolas", 12));
                 groupArestas.getChildren().add(pesoText);
 
-                // polygon (small triangle) para sentido visual leve (não verdadeiro direção)
                 Polygon arrow = new Polygon();
                 arrow.setFill(Color.web("#9fb8d9"));
                 groupArestas.getChildren().add(arrow);
 
-// criar versões finais das variáveis usadas no listener
                 final int vFinal = v;
                 final int wFinal = w;
                 final Line linhaFinal = linha;
@@ -261,7 +249,6 @@ public class Main extends Application {
                 final Circle cOrigFinal = cOrig;
                 final Circle cDestFinal = cDest;
 
-// listener que recalcula a posição do texto e do triângulo sempre que círculos se movem
                 ChangeListener<Number> atualiza = new ChangeListener<Number>() {
                     @Override
                     public void changed(ObservableValue<? extends Number> obs, Number oldV, Number newV) {
@@ -274,17 +261,12 @@ public class Main extends Application {
                 cDest.centerXProperty().addListener(atualiza);
                 cDest.centerYProperty().addListener(atualiza);
 
-                // inicializa posicoes
                 updateEdgeGraphicsForense(vFinal, wFinal, linhaFinal, arrowFinal, pesoTextFinal, cOrigFinal, cDestFinal);
 
             }
         }
     }
 
-    /**
-     * Atualiza posição do texto do peso e do pequeno triângulo indicador
-     * (apenas estético)
-     */
     private void updateEdgeGraphicsForense(int origem, int destino,
             Line linha, Polygon arrow, Text pesoText,
             Circle cOrig, Circle cDest) {
@@ -304,11 +286,9 @@ public class Main extends Application {
         double ux = dx / dist;
         double uy = dy / dist;
 
-        // ponto médio
         double midX = (x1 + x2) / 2;
         double midY = (y1 + y2) / 2;
 
-        // deslocamento perpendicular pequeno para não colidir com a linha
         double perpOffset = 10;
         double px = -uy * perpOffset;
         double py = ux * perpOffset;
@@ -316,8 +296,7 @@ public class Main extends Application {
         pesoText.setX(midX + px - pesoText.getLayoutBounds().getWidth() / 2);
         pesoText.setY(midY + py + pesoText.getLayoutBounds().getHeight() / 4);
 
-        // triângulo decorativo posicionado um pouco antes do meio (apenas para visual técnico)
-        double triBack = 14; // quão próximo do meio ele fica
+        double triBack = 14;
         double tipX = midX - ux * triBack;
         double tipY = midY - uy * triBack;
 
@@ -378,7 +357,6 @@ public class Main extends Application {
         }
         System.out.println();
 
-        // aplicar efeito de fade nas arestas do ciclo; desenhamos linhas vermelhas por cima
         for (int i = 0; i < lista.size(); i++) {
             int v1 = lista.get(i);
             int v2 = lista.get((i + 1) % lista.size());
@@ -394,7 +372,6 @@ public class Main extends Application {
             linha.setStrokeWidth(4);
             linha.setOpacity(0.95);
 
-            // animação piscante para chamar atenção
             FadeTransition ft = new FadeTransition(Duration.seconds(0.7), linha);
             ft.setFromValue(1.0);
             ft.setToValue(0.25);
@@ -405,7 +382,6 @@ public class Main extends Application {
             root.getChildren().add(linha);
         }
 
-        // pintar vértices do ciclo com sombra vermelha
         DropShadow ds = new DropShadow();
         ds.setOffsetX(0);
         ds.setOffsetY(0);
