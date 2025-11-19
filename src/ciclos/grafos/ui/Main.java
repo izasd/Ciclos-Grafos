@@ -64,7 +64,7 @@ public class Main extends Application {
     private final NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
 
     public static void main(String[] args) {
-        In in = new In("C:\\Users\\Iza\\Documents\\NetBeansProjects\\Ciclos-Grafos\\src\\ciclos\\grafos\\grafo_suspeito.txt");
+        In in = new In("src/ciclos/grafos/grafo_suspeito1.txt");
         G = new Grafo(in);
         launch();
     }
